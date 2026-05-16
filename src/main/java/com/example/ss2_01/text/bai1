@@ -1,0 +1,17 @@
+Phần 1 - Phân tích logic: Tại sao Client "kêu cứu"?
+Nguyên nhân gốc rễ khiến các ứng dụng client (Frontend, Mobile) không thể nhận được JSON mà chỉ nhận được một chuỗi vô nghĩa nằm ở dòng lệnh:
+return products.toString();
+
+1. Bản chất của toString() trong Java
+Khi bạn gọi products.toString(), Java sẽ kích hoạt phương thức toString() của lớp ArrayList. Phương thức này chỉ đơn giản là nối các phần tử lại thành một chuỗi văn bản (String) có định dạng dạng:
+[Product@hash1, Product@hash2] (hoặc nếu bạn đã override toString của lớp Product thì nó sẽ ra dạng [id=HP001, name=...]).
+
+2. Sự "lệch pha" về định dạng (Content-Type)
+Về phía Spring Boot: Vì kiểu trả về của hàm là String, Spring Boot sẽ hiểu rằng bạn chỉ muốn gửi một chuỗi văn bản thuần túy. Do đó, HTTP Response Header sẽ được tự động đặt là Content-Type: text/plain.
+
+Về phía Client: Các đội ngữ Frontend/Mobile đang cấu hình ứng dụng để chuẩn bị đón một cấu trúc JSON (Content-Type: application/json). Khi nhận về một chuỗi text không đúng cú pháp JSON (thiếu dấu ngoặc kép hợp lệ, thiếu cặp key-value chuẩn), hàm parse JSON của họ sẽ bị sập (crash) hoặc trả về null.
+
+Phần 2 - Thực thi: Tối ưu hóa và Chuẩn hóa Code
+Để Spring Boot tự động chuyển đổi (marshal) danh sách sản phẩm thành JSON, bạn không cần phải ép nó về String. Spring Boot sở hữu bộ thư viện Jackson rất mạnh mẽ dưới mui xe. Nếu bạn trả về một Object hoặc một Collection (List, Set...), Jackson sẽ tự động chuyển nó thành JSON và set Content-Type: application/json một cách chuẩn chỉnh.
+
+Bên cạnh đó, việc đưa các API vào các nhóm như /api/v1 là điểm cộng lớn giúp hệ thống chuyên nghiệp và dễ mở rộng.

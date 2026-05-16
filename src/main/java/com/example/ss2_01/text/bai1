@@ -11,7 +11,3 @@ Về phía Spring Boot: Vì kiểu trả về của hàm là String, Spring Boot
 
 Về phía Client: Các đội ngữ Frontend/Mobile đang cấu hình ứng dụng để chuẩn bị đón một cấu trúc JSON (Content-Type: application/json). Khi nhận về một chuỗi text không đúng cú pháp JSON (thiếu dấu ngoặc kép hợp lệ, thiếu cặp key-value chuẩn), hàm parse JSON của họ sẽ bị sập (crash) hoặc trả về null.
 
-Phần 2 - Thực thi: Tối ưu hóa và Chuẩn hóa Code
-Để Spring Boot tự động chuyển đổi (marshal) danh sách sản phẩm thành JSON, bạn không cần phải ép nó về String. Spring Boot sở hữu bộ thư viện Jackson rất mạnh mẽ dưới mui xe. Nếu bạn trả về một Object hoặc một Collection (List, Set...), Jackson sẽ tự động chuyển nó thành JSON và set Content-Type: application/json một cách chuẩn chỉnh.
-
-Bên cạnh đó, việc đưa các API vào các nhóm như /api/v1 là điểm cộng lớn giúp hệ thống chuyên nghiệp và dễ mở rộng.
